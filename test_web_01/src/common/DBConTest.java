@@ -24,7 +24,8 @@ public class DBConTest {
 				String user_no = rs.getString("user_no");
 				String id1 = rs.getString("id");
 				String password = rs.getString("password");
-				System.out.println(" 번호 : " + user_no + " 아이디 : " + id1 + " 비밀번호 : " + password);
+				String name = rs.getString("name");
+				System.out.println(" 번호 : " + user_no + " 아이디 : " + id1 + " 비밀번호 : " + password + " 이름 :" + name);
 			}
 			
 		}catch(ClassNotFoundException e) {
