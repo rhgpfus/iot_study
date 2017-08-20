@@ -9,14 +9,11 @@ import java.sql.Statement;
 public class DBConTest {
 
 	public static void main(String[] args) {
-		String url = "jdbc:mysql://localhost:3306/iot_study";
-		String id = "root";
-		String pwd = "tlqdnjs1";
+		
 		Connection con;
 		Statement st;
 		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-			con = DriverManager.getConnection(url, id, pwd);
+			con = DBConnector.getCon();
 			st = con.createStatement();
 			String sql = "select * from user";
 			ResultSet rs = st.executeQuery(sql);
