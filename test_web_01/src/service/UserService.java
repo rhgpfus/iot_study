@@ -1,7 +1,10 @@
 package service;
 
+import java.util.Map;
+
 public interface UserService {
 
-	public void insertUser();
-	
+	public String insertUser(Map<String, String> hm);
+	public Map<String, String> selectUser(Map<String, String> hm);
+	public int deleteUser(Map<String,String> hm);
 }
