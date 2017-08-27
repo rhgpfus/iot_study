@@ -11,9 +11,7 @@
 	<table border=1>
 		<tr>
 			<td colspan="2" align="center">회원가입</td>
-			
 		</tr>
-		
 		<tr align="center">
 			<td>아이디</td>
 			<td><input type="text" name="id" id="id"></td>

@@ -3,6 +3,7 @@ CREATE TABLE `user` (
 	`id` VARCHAR(100) NULL DEFAULT NULL,
 	`name` VARCHAR(100) NULL DEFAULT NULL,
 	`password` VARCHAR(100) NULL DEFAULT NULL,
+	hobby varchar
 	PRIMARY KEY (`user_no`)
 )
 COLLATE='utf8_general_ci'

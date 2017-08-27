@@ -15,6 +15,12 @@ $(document).ready(function(){
 		var value = this.value;
 		if(value=="회원탈퇴"){
 			$("#command").val("delete");
+		}else if(value=="회원수정"){
+			location.href = "/user/updateUser.jsp";
+			return;
+		}else if(value=="회원리스트"){
+			location.href = "/user/listUser.jsp";
+			return;
 		}
 		this.form.submit();
 	})
@@ -65,6 +71,7 @@ if(user==null){
 	<input type="button" value="로그아웃">
 	<input type="button" value="회원탈퇴">
 	<input type="button" value="회원수정">
+	<input type="button" value="회원리스트">
 	<input type="hidden" name="command" id="command" value="logout">
 	<input type="hidden" name="user_no" value="<%=user_no%>">
 	</form>

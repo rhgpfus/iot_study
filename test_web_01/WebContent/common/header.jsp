@@ -5,16 +5,16 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<script src="/js/jquery-3.2.1.min.js"></script>
 <%
-if(session.getAttribute("user")==null){
-	response.sendRedirect("/user/login.jsp");
+Map<String,String> user = null;
+if(session.getAttribute("user")!=null){
+	user = (Map<String, String>)session.getAttribute("user");
 }else{
-	Map<String, String> user = (Map)session.getAttribute("user");
-	out.println(user.get("name") + "님 어서옵쇼");
+%>
+<script>
+location.href = "/user/login.jsp";
+</script>
+<%
 }
 %>
-</body>
-</html>
