@@ -3,7 +3,9 @@ package service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import common.DBCon;
@@ -40,8 +42,8 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int insertUser(Map<String, String> hm) {
-		String sql = "insert into user(id,pwd,name,hobby)";
-		sql +=" values(?,?,?,?)";
+		String sql = "insert into user(id,pwd,name,hobby,admin)";
+		sql +=" values(?,?,?,?,?)";
 		Connection con;
 		try {
 			DBCon db = new DBCon();
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
 			ps.setString(2, hm.get("pwd"));
 			ps.setString(3, hm.get("name"));
 			ps.setString(4, hm.get("hobby"));
+			ps.setString(5, hm.get("admin"));
 			int rCnt = ps.executeUpdate();
 			return rCnt;
 			
@@ -63,7 +66,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public int updateUser(Map<String, String> hm) {
 		String sql = "update user" + 
-				" set id=?,pwd=?,name=?,hobby=?" + 
+				" set id=?,pwd=?,name=?,hobby=?,admin=?" + 
 				" where user_no=?";
 		Connection con;
 		try {
@@ -74,7 +77,9 @@ public class UserServiceImpl implements UserService {
 			ps.setString(2, hm.get("pwd"));
 			ps.setString(3, hm.get("name"));
 			ps.setString(4, hm.get("hobby"));
-			ps.setString(5, hm.get("user_no"));
+			ps.setString(5, hm.get("admin"));
+			ps.setString(6, hm.get("user_no"));
+			
 			int rCnt = ps.executeUpdate();
 			return rCnt;
 			
@@ -100,6 +105,37 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		return 0;
+	}
+
+	@Override
+	public List<Map<String, String>> getUserList(Map<String, String> hm) {
+		Connection con;
+		List<Map<String, String>> userList = new ArrayList<Map<String,String>>();
+		try {
+			DBCon db = new DBCon();
+			con = db.getCon();
+			String sql = "select * from user where 1=1";
+			if(hm.get("name")!=null) {
+				sql += " and name like concat('%',?,'%')";
+			}
+			PreparedStatement ps = con.prepareStatement(sql);
+			if(hm.get("name")!=null) {
+				ps.setString(1, hm.get("name"));
+			}
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				Map<String, String> rHm = new HashMap<String, String>();
+				rHm.put("id", rs.getString("id"));
+				rHm.put("user_no", rs.getString("user_no"));
+				rHm.put("name", rs.getString("name"));
+				rHm.put("hobby", rs.getString("hobby"));
+				rHm.put("admin", rs.getString("admin"));
+				userList.add(rHm);
+			}			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return userList;
 	}
 
 }

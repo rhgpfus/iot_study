@@ -1,10 +1,6 @@
-<%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="/common/header.jsp" %>
 <title>Insert title here</title>
 </head>
 <%
@@ -40,6 +36,15 @@ Map<String, String> user = (Map)session.getAttribute("user");
 		게임<input type="checkbox" name="hobby"value="게임"<%=user.get("hobby").indexOf("게임")!=-1?"checked":"" %>>
 		독서<input type="checkbox" name="hobby"value="독서"<%=user.get("hobby").indexOf("독서")!=-1?"checked":"" %>>
 		음악<input type="checkbox" name="hobby"value="음악"<%=user.get("hobby").indexOf("음악")!=-1?"checked":"" %>>
+	</td>
+</tr>
+<tr>
+	<td align="center">관리자여부</td>
+	<td>
+		<select name="admin" id="admin">
+			<option value="1">Y</option>
+			<option value="0">N</option>
+		</select>
 	</td>
 </tr>
 <tr>

@@ -1,13 +1,30 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<%@ include file="/common/header.jsp" %>
+<title>회원가입</title>
 </head>
+<script>
+$(document).ready(function(){
+	$("input[type='button']").click(function(){
+		var params = {};
+		params["id"] = $("#id").val();
+		params["pwd"] = $("#pwd").val();
+		params["name"] = $("#name").val();
+		params["admin"] = $("#admin").val();
+		var hobby = $('input:checked').map(function(){
+			return $(this).val();
+		}).toArray();
+		params["hobby"] = hobby.toString();
+		params = JSON.stringify(params);
+		
+		var params = encodeURI("?command=signin&param=" + params);
+		var a = new AjaxUtil(params);
+		a.send();
+	})
+})
+</script>
 <body>
-<form action="sigin.user" method="post">
+<form action="signin.user" method="post">
 <table border="1" cellspacing="0" cellpadding="0" width="400" align="center">
 <tr>
 	<td colspan="2"><p align="center"> = 회원 가입 = </p></td>
@@ -34,7 +51,16 @@
 	</td>
 </tr>
 <tr>
-	<td colspan="2" align="center"><input type="submit" value="회원가입" /></td>
+	<td align="center">관리자여부</td>
+	<td>
+		<select name="admin" id="admin">
+			<option value="1">Y</option>
+			<option value="0">N</option>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td colspan="2" align="center"><input type="button" value="회원가입" /></td>
 </tr> 
 </table>
 <input type="hidden" name="command" id="command" value="signin"/><br/>
