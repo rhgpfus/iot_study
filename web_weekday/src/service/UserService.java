@@ -8,6 +8,8 @@ public interface UserService {
 
 	Map<String, String> getUserLogin(String id, String pwd);
 	
+	Map<String, String> seleteUser(String user_no);
+	
 	int insertUser(Map <String, String> hm);
 	
 	int updateUser(Map <String, String> hm);

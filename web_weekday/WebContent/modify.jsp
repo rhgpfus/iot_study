@@ -4,13 +4,31 @@
 <title>Insert title here</title>
 </head>
 <%
-if(session.getAttribute("user")==null){
-	RequestDispatcher dis = request.getRequestDispatcher("/login.jsp");
-	dis.forward(request, response);
-}
-Map<String, String> user = (Map)session.getAttribute("user");
-
+String user_no = request.getParameter("user_no");
 %>
+<script>
+function callback(result){
+	$("#id").val(result.id);
+	$("#name").val(result.name);
+	$("#user_no").val(result.user_no);
+	
+	if(result.hobby){
+		var hobbys = result.hobby.split(",");
+		for(var i=0,max=hobbys.length; i<max; i++){
+			$("input[value='" + hobbys[i] + "']").prop("checked",true);
+		}
+	}
+}
+$(document).ready(function(){
+	var param = "?command=viwe&user_no=<%=user_no%>";
+	param = encodeURI(param);
+	var au = new AjaxUtil(param);
+	au.changeCallBack(callback);
+	au.send();
+})
+
+</script>
+
 <body>
 <form action="sigin.user" method="post">
 <table border="1" cellspacing="0" cellpadding="0" width="400" align="center">
@@ -19,7 +37,7 @@ Map<String, String> user = (Map)session.getAttribute("user");
 </tr>
 <tr>
 	<td align="center">아이디</td>
-	<td><input type="text" name="id" id="id" value="<%=user.get("id")%>"/></td>
+	<td><input type="text" name="id" id="id"/></td>
 </tr>
 <tr>
 	<td align="center">비밀번호</td>
@@ -27,24 +45,15 @@ Map<String, String> user = (Map)session.getAttribute("user");
 </tr>
 <tr>
 	<td align="center">이름</td>
-	<td><input type="text" name="name" id="name" maxlength="100" value="<%=user.get("name")%>"/></td>
+	<td><input type="text" name="name" id="name" maxlength="100" /></td>
 <tr>
 <tr>
 	<td align="center">취미</td>
 	<td>
-		잠자기<input type="checkbox" name="hobby" value="잠자기" <%=user.get("hobby").indexOf("잠자기")!=-1?"checked":"" %>>
-		게임<input type="checkbox" name="hobby"value="게임"<%=user.get("hobby").indexOf("게임")!=-1?"checked":"" %>>
-		독서<input type="checkbox" name="hobby"value="독서"<%=user.get("hobby").indexOf("독서")!=-1?"checked":"" %>>
-		음악<input type="checkbox" name="hobby"value="음악"<%=user.get("hobby").indexOf("음악")!=-1?"checked":"" %>>
-	</td>
-</tr>
-<tr>
-	<td align="center">관리자여부</td>
-	<td>
-		<select name="admin" id="admin">
-			<option value="1">Y</option>
-			<option value="0">N</option>
-		</select>
+		잠자기<input type="checkbox" name="hobby" value="잠자기"/>
+		게임<input type="checkbox" name="hobby" value="게임"/>
+		독서<input type="checkbox" name="hobby" value="독서"/>
+		음악<input type="checkbox" name="hobby" value="음악"/>
 	</td>
 </tr>
 <tr>
@@ -52,6 +61,7 @@ Map<String, String> user = (Map)session.getAttribute("user");
 </tr> 
 </table>
 <input type="hidden" name="command" id="command" value="modify"/><br/>
+<input type="hidden" name="user_no" id="user_no"/>
 </form>
 </body>
 <script>

@@ -78,8 +78,9 @@ public class UserServlet extends HttpServlet{
 			String id = request.getParameter("id");
 			String pwd = request.getParameter("pwd");
 			String name = request.getParameter("name");
+			String user_no = request.getParameter("user_no");
 			String[]  hobbies = request.getParameterValues("hobby");
-			String admin = request.getParameter("admin");
+			
 			String hobby="";
 			for(String h : hobbies) {
 				hobby += h+",";
@@ -90,34 +91,29 @@ public class UserServlet extends HttpServlet{
 			hm.put("id", id);
 			hm.put("pwd", pwd);
 			hm.put("name", name);
+			hm.put("user_no", user_no);
 			hm.put("hobby", hobby);
-			hm.put("admin", admin);
 			String result = "수정 실패";
-			HttpSession session = request.getSession();
-			Map<String, String> user = (Map)session.getAttribute("user");
-			hm.put("user_no", user.get("user_no"));
+			
 			int rCnt = us.updateUser(hm);
 			if(rCnt==1) {
-				session.invalidate();
 				result = "<script>";
 				result += "alert('수정 성공');";
-				result += "location.href='/login.jsp';";
+				result += "location.href='/main.jsp';";
 				result += "</script>";
 			}
 			doProcess(response, result);
 			
 		}else if(command.equals("delete")) {
+			String user_no = request.getParameter("user_no");
 			Map<String, String> hm = new HashMap<String, String>();
 			String result = "회원탈퇴 실패";
-			HttpSession session = request.getSession();
-			Map<String, String> user = (Map)session.getAttribute("user");
-			hm.put("user_no", user.get("user_no"));
+			hm.put("user_no", user_no);
 			int rCnt = us.deleteUser(hm);
 			if(rCnt==1) {
-				session.invalidate();
 				result = "<script>";
 				result += "alert('회원탈퇴 성공');";
-				result += "location.href='/login.jsp';";
+				result += "location.href='/main.jsp';";
 				result += "</script>";
 			}
 			doProcess(response, result);
@@ -137,6 +133,12 @@ public class UserServlet extends HttpServlet{
 				result += "</tr>";
 			}
 			result += "</table>";
+			doProcess(response, result);
+		}else if(command.equals("viwe")) {
+			String user_no = request.getParameter("user_no");
+			Map<String, String> hm = us.seleteUser(user_no);
+			Gson g = new Gson();
+			String result = g.toJson(hm);
 			doProcess(response, result);
 		}
 	}

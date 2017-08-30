@@ -45,13 +45,19 @@
 			var url = this.getAttribute("data-url");
 			if(url){
 				if(url.split(".")[1]=="user"){
-					var param = "?command=list&name="+$("#name").val();
+					var param = "?command=list&name="+ $("#name").val();
 					var au = new AjaxUtil(param);
 					au.send();
 				}
 			}else{
-				var userNum = this.getAttribute("data-num");
-				alert(userNum);
+				var user_no = this.getAttribute("data-num");
+				if(this.getAttribute("value")=="수정"){
+					location.href = "/modify.jsp?user_no=" + user_no;
+				}else if(this.getAttribute("value")=="삭제"){
+					var param = "?command=delete&user_no=" + user_no;
+					var au = new AjaxUtil(param);
+					au.send();
+				}
 			}
 		});
 	}
