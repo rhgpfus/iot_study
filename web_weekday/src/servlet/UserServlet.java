@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import com.google.gson.Gson;
 
@@ -93,14 +94,24 @@ public class UserServlet extends HttpServlet{
 			hm.put("name", name);
 			hm.put("user_no", user_no);
 			hm.put("hobby", hobby);
+			HttpSession session = request.getSession();
 			String result = "수정 실패";
 			
 			int rCnt = us.updateUser(hm);
 			if(rCnt==1) {
-				result = "<script>";
-				result += "alert('수정 성공');";
-				result += "location.href='/main.jsp';";
-				result += "</script>";
+				Map<String, String> user = (Map<String, String>)session.getAttribute("user");
+				if(user.get("admin").equals("1")) {
+					result = "<script>";
+					result += "alert('회원수정 성공');";
+					result += "location.href='/list.jsp';";
+					result += "</script>";
+				}else {
+					session.invalidate();
+					result = "<script>";
+					result += "alert('수정 성공.다시로긴');";
+					result += "location.href='/login.jsp';";
+					result += "</script>";
+				}
 			}
 			doProcess(response, result);
 			
@@ -111,10 +122,20 @@ public class UserServlet extends HttpServlet{
 			hm.put("user_no", user_no);
 			int rCnt = us.deleteUser(hm);
 			if(rCnt==1) {
-				result = "<script>";
-				result += "alert('회원탈퇴 성공');";
-				result += "location.href='/main.jsp';";
-				result += "</script>";
+				HttpSession session = request.getSession();
+				Map<String, String> user = (Map<String, String>)session.getAttribute("user");
+				if(user.get("admin").equals("1")) {
+					result = "<script>";
+					result += "alert('회원수정 성공');";
+					result += "location.href='/list.jsp';";
+					result += "</script>";
+				}else {
+					session.invalidate();
+					result = "<script>";
+					result += "alert('수정 성공.다시로긴');";
+					result += "location.href='/login.jsp';";
+					result += "</script>";
+				}
 			}
 			doProcess(response, result);
 		}else if(command.equals("list")) {
