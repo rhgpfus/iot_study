@@ -11,7 +11,8 @@ $(document).ready(function(){
 		params["pwd"] = $("#pwd").val();
 		params["name"] = $("#name").val();
 		params["admin"] = $("#admin").val();
-		var hobby = $('input:checked').map(function(){
+		alert(params.id + params.pwd);
+		var hobby = $('input[name="hobby"]:checked').map(function(){
 			return $(this).val();
 		}).toArray();
 		params["hobby"] = hobby.toString();

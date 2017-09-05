@@ -67,7 +67,6 @@ public class UserServlet extends HttpServlet{
 			HashMap rehm = new HashMap();
 			rehm.put("msg", result);
 			rehm.put("url", "/login.jsp");
-			
 			str = g.toJson(rehm);
 			doProcess(response, str);
 		}else if(command.equals("logout")) {
@@ -126,13 +125,13 @@ public class UserServlet extends HttpServlet{
 				Map<String, String> user = (Map<String, String>)session.getAttribute("user");
 				if(user.get("admin").equals("1")) {
 					result = "<script>";
-					result += "alert('회원수정 성공');";
+					result += "alert('삭제 성공');";
 					result += "location.href='/list.jsp';";
 					result += "</script>";
 				}else {
 					session.invalidate();
 					result = "<script>";
-					result += "alert('수정 성공.다시로긴');";
+					result += "alert('삭제 실패');";
 					result += "location.href='/login.jsp';";
 					result += "</script>";
 				}

@@ -7,15 +7,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
 String rootPath = request.getContextPath();
-
+Map<String, String> user = null;
 if(session.getAttribute("user")==null){
 	RequestDispatcher dis = request.getRequestDispatcher("/login.jsp");
 	dis.forward(request, response);
+}else{
+	user = (Map<String, String>)session.getAttribute("user");
 }
 %>
 <script src="<%=rootPath%>/js/jquery-3.2.1.min.js"></script>
 <script>
-var AjaxUtil = function(params, p_url) {
+var AjaxUtil = function(params,p_url) {
 	this.params = params;
 
 	getHttpXmlObj = function() {
@@ -28,7 +30,7 @@ var AjaxUtil = function(params, p_url) {
 	}
 	this.xhr = getHttpXmlObj();
 	var method = "post";
-	var url = p_url?p_url:"test.user";
+	var url = p_url ? p_url:"test.user";
 	var aSync = true;
 	this.xhr.callfunc = null;
 	this.xhr.onreadystatechange = function() {
@@ -40,7 +42,7 @@ var AjaxUtil = function(params, p_url) {
 					this.callfunc(re);
 				}else{
 					alert(re.msg);
-					location.href = re.url;
+					location.href=re.url;
 				}
 			}
 		}

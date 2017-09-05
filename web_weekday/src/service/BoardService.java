@@ -6,9 +6,13 @@ import java.util.Map;
 
 public interface BoardService {
 
-	List<Map<String, String>> selectBoardList();
-	Map<String, String> selectBoard();
-	int insertBoard();
-	int updateBoard();
-	int deleteBoard();
+List<Map<String, String>> selectBoardList();
+	
+	Map<String, String> selectBoard(Map<String, String> hm);
+	
+	int insertBoard(Map<String, String> hm);
+	
+	int deleteBoard(Map<String, String> hm);
+	
+	int updateBoard(Map<String, String> hm);
 }
