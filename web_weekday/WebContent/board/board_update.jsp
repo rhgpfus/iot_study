@@ -18,14 +18,33 @@ $(document).ready(function(){
 	var au = new AjaxUtil(param,"write.board");
 	au.changeCallBack(callback);
 	au.send();
-	$("#btnWrite").click(function(){
+	$("#btnUpdate").click(function(){
 		var param = {};
 		param["title"] = $("#title").val();
 		param["content"] = $("#content").val();
-		param = "?command=write&param=" + JSON.stringify(param);
-		param = encodeURI(param);
-		var au = new AjaxUtil(param,"write.board");
-		au.send();
+		param["writer"] = $("#writer").val();
+		param["b_num"] = "<%=request.getParameter("b_num")%>";
+		param["command"] = "update";
+		param = JSON.stringify(param);
+		$.ajax({ 
+	        type     : "POST"
+	    	    ,   url      : "/write.board"
+	    	    ,   dataType : "json" 
+	    	    ,   beforeSend: function(xhr) {
+	    	        xhr.setRequestHeader("Accept", "application/json");
+	    	        xhr.setRequestHeader("Content-Type", "application/json");
+	    	    }
+	    	    ,   data     : param
+	    	    ,   success : function(result){
+	    	    	alert(result.msg);
+	    	    	location.href = result.url;
+	    	    }
+	    	    ,   error : function(xhr, status, e) {
+	    		    	alert("에러 : "+e);
+	    		},
+	    		complete : function(e) {
+	    		}
+		    });
 	})
 })
 
@@ -46,7 +65,7 @@ $(document).ready(function(){
 			<td><input type="text" name="writerName" id="writerName" readonly/></td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="button" id="btnWrite" value="게시글 올리기"/></td>
+			<td colspan="2"><input type="button" id="btnUpdate" value="게시글 수정"/></td>
 		</tr>
 	</table>
 	<input type="hidden" name="command" id="command" value="write">

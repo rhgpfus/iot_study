@@ -42,7 +42,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int insertBoard(Map<String, String> hm) {
-		String sql = "insert into board(title, content, reg_Date,writer)";
+		String sql = "insert into board(title, content, reg_date, writer)";
 		sql +=" values(?,?,now(),?)";
 		Connection con = null;
 		DBCon db = null;
@@ -77,13 +77,70 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public int deleteBoard(Map<String, String> hm) {
-		// TODO Auto-generated method stub
+		String sql = "delete from board where b_num=?";
+		Connection con = null;
+		DBCon db = null;
+		try {
+			db = new DBCon();
+			con = db.getCon();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, hm.get("b_num"));
+			int rCnt = ps.executeUpdate();
+			if(rCnt==1) {
+				con.commit();
+			}else {
+				con.rollback();
+			}
+			return rCnt;
+		}catch(Exception e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}finally {
+			if(db!=null) {
+				db.closeCon();
+			}
+		}
 		return 0;
 	}
 
 	@Override
 	public int updateBoard(Map<String, String> hm) {
-		// TODO Auto-generated method stub
+		String sql = "update board ";
+		sql += " set title=?, content=?, writer=?";
+		sql += " where b_num=?";
+		Connection con = null;
+		DBCon db = null;
+		try {
+			db = new DBCon();
+			con = db.getCon();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, hm.get("title"));
+			ps.setString(2, hm.get("content"));
+			ps.setString(3, hm.get("writer"));
+			ps.setString(4, hm.get("b_num"));
+			int rCnt = ps.executeUpdate();
+			if(rCnt==1) {
+				con.commit();
+			}else {
+				con.rollback();
+			}
+			return rCnt;
+		}catch(Exception e) {
+			try {
+				con.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}finally {
+			if(db!=null) {
+				db.closeCon();
+			}
+		}
 		return 0;
 	}
 
