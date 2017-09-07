@@ -2,7 +2,6 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
+import dto.GoodsInfo;
+import dto.VendorInfo;
 import service.GoodsService;
 import service.GoodsServiceImpl;
 
@@ -31,16 +32,37 @@ public class GoodsServlet extends HttpServlet{
 		
 		String command = request.getParameter("command");
 		if(command.equals("list")) {
-			List<String> list = new ArrayList<String>();
-			list.add("test1");
-			list.add("test2");
-			list.add("test3");
-			request.setAttribute("test", list);
-			String url = "/goods/goods_list.jsp";
-			RequestDispatcher rd = request.getRequestDispatcher(url);
+			List<GoodsInfo> giList = gs.selectGoodsList(null);
+			List<VendorInfo> viList = gs.selectVendorList(null);
+			
+			request.setAttribute("goodsList", giList);
+			request.setAttribute("vendorList", viList);
+			String result = "<table border='1'>";
+			for(GoodsInfo gi : giList) {
+				result += "<tr>";
+				result += "<td>" + gi.getGiNum() + "</td>";
+				result += "<td>"+ gi.getGiName() + "</td>";
+				result += "<td>"+ gi.getGiDesc() + "</td>";
+				result += "<td><select>";
+				for(VendorInfo vi : viList) {
+					String sel = "";
+					if(vi.getViNum()==gi.getViNum()) {
+						sel = "selected";
+					}
+					result += "<option" + sel + ">" + vi.getViName() + "</option>";
+				}
+				result += "</select></td>";
+				result += "<td>" + gi.getViNum() + "</td>";
+				result += "</tr>";
+			}
+			result += "</table>";
+			doProcess(response, result);
+			
+			//String url = "/goods/goods_list.jsp";
+			//RequestDispatcher rd = request.getRequestDispatcher(url);
 			//url을 변경하지않고 내부적으로 동작하는 자바를 변경한다. 내용만 goods_list로 되는것.
-			rd.forward(request, response);
-			//
+			//rd.forward(request, response);
+			
 		}
 		
 	}
