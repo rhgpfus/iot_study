@@ -1,7 +1,8 @@
 package dto;
 
-public class UserInfo {
+public class User {
 
+	
 	private String name;
 	private int age;
 	
@@ -21,5 +22,4 @@ public class UserInfo {
 	public String toString() {
 		return "User [name=" + name + ", age=" + age + "]";
 	}
-	
 }

@@ -1,17 +1,13 @@
-<%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<%@page import="java.util.Map"%>
+<%@ include file="/common/header.jsp" %>
+<title>로그인</title>
 </head>
-<script src="/js/jquery-3.2.1.min.js"></script>
 <script>
 $(document).ready(function(){
 	$("input[type='button']").click(function(){
+		if(this.getAttribute("id")=="btnLogin") return;
 		var value = this.value;
 		if(value=="회원탈퇴"){
 			$("#command").val("delete");
@@ -19,7 +15,7 @@ $(document).ready(function(){
 			location.href = "/user/updateUser.jsp";
 			return;
 		}else if(value=="회원리스트"){
-			location.href = "/user/listUser.jsp";
+			location.href = "/user/list.jsp";
 			return;
 		}
 		this.form.submit();
@@ -28,43 +24,72 @@ $(document).ready(function(){
 </script>
 <body>
 <%
-Map<String,String> user = null;
-if(session.getAttribute("user")!=null){
-	user = (Map<String, String>)session.getAttribute("user");
-}
 if(user==null){
 %>
-<form action="/login.user" method="post">
+<script>
+
+$(document).ready(function(){
+	$("#btnLogin").click(function(){
+		var idValue = $("#id").val().trim();
+		var pwdValue = $("#pwd").val().trim();
+		if(idValue==""){
+			alert("아이디를 적어야지!!")
+			$("#id").val("");
+			$("#id").focus();
+			return;
+		}
+		if(pwdValue==""){
+			alert("비밀번호 빼먹었네!!")
+			$("#pwd").val("");
+			$("#pwd").focus();
+			return;
+		}
+		var param = {};
+		param["id"] = idValue;
+		param["pwd"] = pwdValue;
+		
+		param = "?command=login&param=" + JSON.stringify(param);
+		param = encodeURI(param);
+		var au = new AjaxUtil("test.user",param,"get",false);
+		au.changeCallBack(callback);
+		au.send();
+	});
+})
+
+function callback2(result){
+	var re = JSON.parse(result);
+	alert(re.result);
+	location.href = re.url;
+}
+function callback(result){
+	var idValue = $("#id").val().trim();
+	var pwdValue = $("#pwd").val().trim();
+	var param = {};
+	param["id"] = idValue;
+	param["pwd"] = pwdValue;
+	
+	param = "?command=login&param=" + JSON.stringify(param);
+	param = encodeURI(param);
+	var au1 = new AjaxUtil("test.user",param,"post",false);
+	au1.changeCallBack(callback2);
+	au1.send();
+}
+</script>
+<form action="login.user" method="get">
 아이디 : <input type="text" name="id" id="id"><br>
 비밀번호 : <input type="password" name="pwd" id="pwd"><br>
 <input type="hidden" name="command" id="command" value="login">
-<input type="submit" value="로그인">
+<input type="submit" id="btnLogin" value="로그인">
 </form>
 <%
-}else{
-	String user_no = user.get("user_no");
+}else {
 	String id = user.get("id");
+	String user_no = user.get("user_no");
 	String name = user.get("name");
 	String hobby = user.get("hobby");
-	out.println(user.get("id") + "님 어서옵쇼");
-	String result = "<table border=1>";
-	result += "<tr>";
-	result += "<td>유저번호</td>";
-	result += "<td>" + user_no + "</td>";
-	result += "</tr>";
-	result += "<tr>";
-	result += "<td>아이디</td>";
-	result += "<td>" + id + "</td>";
-	result += "</tr>";
-	result += "<tr>";
-	result += "<td>이름</td>";
-	result += "<td>" + name + "</td>";
-	result += "</tr>";
-	result += "<tr>";
-	result += "<td>취미</td>";
-	result += "<td>" + hobby + "</td>";
-	result += "</tr>";
-	result += "</table>";
+	String result = user_no+"번째로 가입하신" + name + "님 반갑습니다.<br>";
+	result += name + "님의 id는 " + id + "이며 취미는 아래와 같습니다.<br>";
+	result += " 취미 : " + hobby;
 	out.println(result);
 	%>
 	<form action="some.user" method="post">

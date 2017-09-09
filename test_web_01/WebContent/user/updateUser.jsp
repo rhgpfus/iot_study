@@ -4,8 +4,27 @@
 <title>회원정보수정</title>
 </head>
 <body>
-<script src="/js/jquery-3.2.1.min.js"></script>
 <script>
+$(document).ready(function(){
+	var params = {};
+	params["user_no"] = "<%=request.getParameter("user_no")%>";
+	params = "?command=view&param=" + JSON.stringify(params);
+	params = encodeURI(params);
+	var au = new AjaxUtil("update.user",params,"post");
+	au.changeCallBack(callback);
+	au.send();
+})
+function callback(result){
+	var obj = JSON.parse(result);
+	$("#name").val(obj.name);
+	$("#id").val(obj.id);
+	var hobbies = obj.hobby.split(",");
+	for(var i=0, max=hobbies.length;i<max;i++){
+		$("input[value='" + hobbies[i] + "']").prop("checked", true);
+	}
+	
+	$("#user_no").val(obj.user_no);
+}
 function check(){
 	var pwdObj = $("#pwd").val().trim();
 	var nameObj = $("#name").val().trim();
@@ -31,25 +50,25 @@ function check(){
 		</tr>
 		<tr align="center">
 			<td>아이디</td>
-			<td><input type="text" name="id" id="id" readonly value="<%=user.get("id")%>"></td>
+			<td><input type="text" name="id" id="id" readonly></td>
 		</tr>
 		<tr align="center">
 			<td>비밀번호</td>
-			<td><input type="password" name="pwd" id="pwd" value="<%=user.get("pwd")%>"></td>
+			<td><input type="password" name="pwd" id="pwd"></td>
 		</tr>
 		<tr align="center">
 			<td>이름</td>
-			<td><input type="text" name="name" id="name" value="<%=user.get("name")%>"></td>
+			<td><input type="text" name="name" id="name"></td>
 		</tr>
 		<tr>
 			<td align="center">취미</td>
 			<td>
-			수면<input type="checkbox" name="hobby" value="수면" <%=user.get("hobby").indexOf("수면")!=-1?"checked":""%>>
-			음악<input type="checkbox" name="hobby" value="음악" <%=user.get("hobby").indexOf("음악")!=-1?"checked":""%>>
-			영화<input type="checkbox" name="hobby" value="영화" <%=user.get("hobby").indexOf("영화")!=-1?"checked":""%>>
-			요리<input type="checkbox" name="hobby" value="요리" <%=user.get("hobby").indexOf("요리")!=-1?"checked":""%>>
-			여행<input type="checkbox" name="hobby" value="여행" <%=user.get("hobby").indexOf("여행")!=-1?"checked":""%>>
-			게임<input type="checkbox" name="hobby" value="게임" <%=user.get("hobby").indexOf("게임")!=-1?"checked":""%>>
+				수면<input type="checkbox" name="hobby" value="수면" >
+				음악<input type="checkbox" name="hobby" value="음악" >
+				영화<input type="checkbox" name="hobby" value="영화">
+				요리<input type="checkbox" name="hobby" value="요리" >
+				여행<input type="checkbox" name="hobby" value="여행">
+				게임<input type="checkbox" name="hobby" value="게임">
 			</td>
 		</tr>
 		<tr>

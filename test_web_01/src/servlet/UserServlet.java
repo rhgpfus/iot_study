@@ -12,28 +12,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
 import service.UserService;
 import service.impl.UserServiceImpl;
 
 public class UserServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private UserService us = new UserServiceImpl();
+	private Gson g = new Gson();
 	
 	 public void doGet(HttpServletRequest requst, HttpServletResponse respons) throws IOException, ServletException{
 		
 	 }
 	 
-	 public void doPost(HttpServletRequest requst, HttpServletResponse respons) throws IOException, ServletException{
-		 requst.setCharacterEncoding("UTF-8");
+	 public void doPost(HttpServletRequest request, HttpServletResponse respons) throws IOException, ServletException{
+		 request.setCharacterEncoding("UTF-8");
 		 
-		 String command = requst.getParameter("command");
+		 String command = request.getParameter("command");
 		 if(command==null) {
 			 doProcess(respons, "잘못된 요청입니다."); 
 		 }else if(command.equals("sign")) {
-			 String id = requst.getParameter("id");
-			 String pwd = requst.getParameter("pwd");
-			 String name = requst.getParameter("name");
-			 String[] hobbys = requst.getParameterValues("hobby");
+			 String id = request.getParameter("id");
+			 String pwd = request.getParameter("pwd");
+			 String name = request.getParameter("name");
+			 String[] hobbys = request.getParameterValues("hobby");
 			 String hobby = "";
 			 for(String h : hobbys) {
 				 hobby += h + ",";
@@ -47,47 +50,41 @@ public class UserServlet extends HttpServlet{
 			 String result = us.insertUser(hm);
 			 doProcess(respons, result);
 		 }else if(command.equals("login")) {
-			 String id = requst.getParameter("id");
-			 String pwd = requst.getParameter("pwd");
-			 Map<String, String> hm  = new HashMap<String, String>();
-			 hm.put("id", id);
-			 hm.put("pwd", pwd);
-			 Map<String, String> resultMap  = us.selectUser(hm);
-			 String url = "location.href='/user/login.jsp'";
-			 if(resultMap.get("id")!=null) {
-				 HttpSession session = requst.getSession();
-				 session.setAttribute("user", resultMap);
-				 url = "location.href='/main.jsp'";
-			 }
-			 String result = "<script>";
-			 result += "alert('" + resultMap.get("result") + "');";
-			 result += url;
-			 result += "</script>";
-			 doProcess(respons, result);
+			 String param = request.getParameter("param");
+				Map<String, String> hm = g.fromJson(param,HashMap.class);
+				Map<String, String> resultMap = us.loginUser(hm);
+				String url = "/user/login.jsp";
+				if(resultMap.get("id")!=null) {
+					HttpSession session = request.getSession();
+					session.setAttribute("user", resultMap);
+					url = "/main.jsp";
+				} 
+				resultMap.put("url", url);
+				String result = g.toJson(resultMap);
+				doProcess(respons, result);
 		 }else if(command.equals("logout")) {
-			 HttpSession session = requst.getSession();
+			 HttpSession session = request.getSession();
 			 session.invalidate();
 			 respons.sendRedirect("/user/login.jsp");
 		 }else if(command.equals("delete")) {
-			 String user_no = requst.getParameter("user_no");
-			
-			 Map<String, String> hm  = new HashMap<String, String>();
-			 hm.put("user_no", user_no);
+			String user_no = request.getParameter("user_no");
+			Map<String, String> hm  = new HashMap<String, String>();
+			hm.put("user_no", user_no);
 			int rCnt = us.deleteUser(hm);
-			 String result ="삭제실패";
-			 if(rCnt==1) {
-					result = "회원탈퇴에 성공하셨습니다.";
-					result += "<script>";
-					result += "alert('회원탈퇴에 성공하셨습니다.');";
-					result += "</script>";
-				}
-			 doProcess(respons, result);
+			String result ="삭제실패";
+			if(rCnt==1) {
+				result = "회원탈퇴에 성공하셨습니다.";
+				result += "<script>";
+				result += "alert('회원탈퇴에 성공하셨습니다.');";
+				result += "</script>";
+			}
+			doProcess(respons, result);
 		 }else if(command.equals("update")) {
-			 String user_no = requst.getParameter("user_no");
-			 String id = requst.getParameter("id");
-			 String pwd = requst.getParameter("pwd");
-			 String name = requst.getParameter("name");
-			 String[] hobbys = requst.getParameterValues("hobby");
+			 String user_no = request.getParameter("user_no");
+			 String id = request.getParameter("id");
+			 String pwd = request.getParameter("pwd");
+			 String name = request.getParameter("name");
+			 String[] hobbys = request.getParameterValues("hobby");
 			 String hobby = "";
 			 for(String h : hobbys) {
 				 hobby += h + ",";
@@ -119,7 +116,13 @@ public class UserServlet extends HttpServlet{
 				}
 				result += "</table>";
 				doProcess(respons, result);
-			}
+		}else if(command.equals("view")) {
+			String param = request.getParameter("param");
+			Map<String, String> hm = g.fromJson(param,HashMap.class);
+			Map<String, String> rHm = us.selectUser(hm);
+			String result = g.toJson(rHm);
+			doProcess(respons, result);
+		}
 	 }
 	 
 	 public void doProcess(HttpServletResponse respons, String writerStr)throws IOException{

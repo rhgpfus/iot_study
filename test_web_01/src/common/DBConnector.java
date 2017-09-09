@@ -11,11 +11,13 @@ public class DBConnector {
 	
 	public static Connection getCon() throws ClassNotFoundException, SQLException{
 		if(con==null) {
-			String url = "jdbc:mysql://localhost:3306/iot_study";
+			String url = "jdbc:mysql://localhost:3306/jsp_study";
 			String id = "root";
 			String pwd = "tlqdnjs1";
+			boolean autoCommit = false;
 			Class.forName("org.mariadb.jdbc.Driver");
 			con = DriverManager.getConnection(url, id, pwd);
+			con.setAutoCommit(autoCommit);
 		}
 		return con;
 	}
