@@ -4,43 +4,51 @@
 <title>게시판</title>
 <script>
 function callback(result){
-	result = JSON.parse(result);
-	var str = "";
-	for(var i=0, max=result.length;i<max;i++){
-		var b = result[i];
-		str +=b.bNum+","+ b.title +"," + b.content + "," + b.regDate + "," + b.writer + "<br>";
+	
+	$("#table").bootstrapTable({data : result});
+}
+
+function getBoardList(content){
+	var param = {};
+	param["command"] = "list";
+	if(content){
+		param["content"] = content;
 	}
-	$("#r_div").html(str);
+	param = JSON.stringify(param);
+	var ja = new JqAjax("list.board", param);
+	ja.changeFunc(callback);
+	ja.send();
 }
 $(document).ready(function(){
-	var param = "?command=list";
-	param = encodeURI(param);
-	var au = new AjaxUtil("list.board",param,"post");
-	au.changeCallBack(callback);
-	au.send();
+	getBoardList();
+	$("#btnSearch").click(function(){
+		var searchStr = $("#searchStr").val().trim();
+		if(!searchStr){
+			alert("검색할 내용을 적엉");
+			$("#searchStr").val("");
+			$("#searchStr").focus();
+			return;
+		}
+		getBoardList(searchStr);
+	});
 })
 </script>
-
 </head>
 <body>
-<div id="r_div"></div>
-<table border="1">
-	<tr align="center">
-		<td>게시판번호</td>
-		<td>제목</td>
-		<td>내용</td>
-		<td>생성일자</td>
-		<td>글쓴이</td>
-	</tr>
-	<c:forEach var="bi" items="${boardList}">
-		<tr align="center">
-			<td><c:out value="${bi.bNum}"/></td>
-			<td><c:out value="${bi.title}"/></td>
-			<td><c:out value="${bi.content}"/></td>
-			<td><c:out value="${bi.regDate}"/></td>
-			<td><c:out value="${bi.writer}"/></td>
+내용 : <input type="text" name="searchStr" id="searchStr"/>
+<input type="button" value="검색" id="btnSearch"/>
+<table border="1" id="table" data-height="460" class="table table-boardered table-hover">
+	<thead>
+		<tr>
+			<th data-field="bNum" class="text-center">게시판번호</th>
+			<th data-field="title" class="text-center">제목</th>
+			<th data-field="content" class="text-center">내용</th>
+			<th data-field="writer" class="text-center">게시자</th>
+			<th data-field="regDate" class="text-center">게시일자</th>
 		</tr>
-	</c:forEach>
+	</thead>
+	<tbody id="r_tbody">
+	</tbody>
 </table>
 </body>
 </html>

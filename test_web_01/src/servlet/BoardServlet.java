@@ -2,7 +2,9 @@ package servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -27,11 +29,15 @@ public class BoardServlet extends HttpServlet{
 	 public void doPost(HttpServletRequest request, HttpServletResponse respons) throws IOException, ServletException{
 		 request.setCharacterEncoding("UTF-8");
 		 String command = request.getParameter("command");
-			if(command.equals("list")) {
-				List<Board> boardList = bs.selectBoardList();
-				String result = g.toJson(boardList);
-				doProcess(respons, result);
-			}
+		 if(command==null) {
+			 Map<String, String> pMap = g.fromJson(request.getReader(), HashMap.class);
+			 command = pMap.get("command");
+		}
+		if(command.equals("list")) {
+			List<Board> boardList = bs.selectBoardList();
+			String result = g.toJson(boardList);
+			doProcess(respons, result);
+		}
 	}
 	 
 	 public void doGet(HttpServletRequest requst, HttpServletResponse respons) throws IOException, ServletException{

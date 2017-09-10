@@ -2,7 +2,25 @@
     pageEncoding="UTF-8"%>
 <%@page import="java.util.Map"%>
 <%@ include file="/common/header.jsp" %>
+
+<link rel="stylesheet" href="/ui/signin.css"/>
 <title>로그인</title>
+<style>
+input{
+	color: red;
+	//태그
+}
+#pwd{
+	color: blue;
+	//아이디
+}
+.test{
+	color: green;
+	background-color: #D1B2FF;
+	//클래스
+	
+}
+</style>
 </head>
 <script>
 $(document).ready(function(){
@@ -75,12 +93,24 @@ function callback(result){
 	au1.send();
 }
 </script>
-<form action="login.user" method="get">
-아이디 : <input type="text" name="id" id="id"><br>
-비밀번호 : <input type="password" name="pwd" id="pwd"><br>
-<input type="hidden" name="command" id="command" value="login">
-<input type="submit" id="btnLogin" value="로그인">
-</form>
+<div class="container">
+		<form class="form-signin" action="/user/login_ok.jsp">
+			<h2 class="form-signin-heading">Please login</h2>
+			<label for="inputEmail" class="sr-only">ID</label> <input type="text"
+				id="id" name="id" class="form-control" placeholder="ID" required
+				autofocus> <label for="inputPassword" class="sr-only">Password</label>
+			<input type="password" name="pwd" id="pwd" class="form-control"
+				placeholder="Password" required>
+			<div class="checkbox">
+				<label> <input type="checkbox" value="remember-me">
+					Remember me
+				</label>
+			</div>
+			<button id="btnLogin" class="btn btn-lg btn-primary btn-block"
+				type="button">Login</button>
+		</form>
+
+	</div>
 <%
 }else {
 	String id = user.get("id");
